@@ -37,16 +37,16 @@ export function main() {
         console.log(colors.fg.magentastrong,)
         console.log('*****************************************************');
         console.log('                                                     ');
-        console.log('                    EFarmacy Health                  ');
+        console.log('               💊     EFarmacy Health   💊          ');
         console.log('                                                     ');
         console.log('*****************************************************');
         console.log('                                                     ');
-        console.log('               1 - Lista de Produtos                 ');
-        console.log('               2 - Listar Produtos pelo EAN          ');
-        console.log('               3 - Cadastrar Produtos                ');
-        console.log('               4 - Atualizar Produtos                ');
-        console.log('               5 - Deletar Produto                   ');
-        console.log('               6 - Sair                              ');
+        console.log('            🔍   1 - Lista de Produtos               ');
+        console.log('            🔍   2 - Listar Produtos pelo EAN        ');
+        console.log('            💾   3 - Cadastrar Produtos              ');
+        console.log('            🔧   4 - Atualizar Produtos              ');
+        console.log('            🪓   5 - Deletar Produto                 ');
+        console.log('            😊   6 - Sair                            ');
         console.log('                                                     ');
         console.log('*****************************************************');
         console.log('                                                     ');

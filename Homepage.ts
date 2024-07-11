@@ -1,105 +1,201 @@
 import readlinesync = require('readline-sync')
 import { colors } from './src/util/Colors';
-import { Produto } from './Model/Produto';
-import { Remedio } from './Model/Remedio';
+import { Produto } from './src/Model/Produto';
+import { Remedio } from './src/Model/Remedio';
+import { ContaController } from './src/controller/ContaController';
+import { preProcessFile } from 'typescript';
+import { read } from 'fs';
+import { Cosmetico } from './src/Model/Cosmetico';
 
 export function main() {
 
-    const produto1 = new Remedio(1, 50, 'Viagra', 1, false)
-    const produto2 = new Remedio(2, 25 , 'Sabonete', 2, false)
+    let opcao, ean, preco: number;
+    let nome: string;
+    let tipo
+    let controlado, clubePontos
 
-    let opcao: number;
+    const tipoProduto = ['Remedio', 'Cosmetico'];
 
 
-  while (true) {
+    
+    
+    
+    const listaProdutos: ContaController = new ContaController();
+    
+    // criacao de contas para poder realizar testes no programa
+    
+    listaProdutos.cadastrar(new Remedio(1, 22.50, 'Benegripe', 1, false))
+    listaProdutos.cadastrar(new Remedio(2, 39.90, 'Alprazolam', 1, true))
 
-    console.log(colors.fg.magentastrong,)
-    console.log('*****************************************************');
-    console.log('                                                     ');
-    console.log('                    EFarmacy Health                  ');
-    console.log('                                                     ');
-    console.log('*****************************************************');
-    console.log('                                                     ');
-    console.log('               1 - Lista de Produtos                 ');
-    console.log('               2 - Listar Produtos pelo EAN          ');
-    console.log('               3 - Cadastrar Produtos                ');
-    console.log('               4 - Atualizar Produtos                ');
-    console.log('               5 - Deletar Produto                   ');
-    console.log('               6 - Sair                              ');
-    console.log('                                                     ');
-    console.log('*****************************************************');
-    console.log('                                                     ');
-    console.log("                                                     ",
-      colors.reset);
+    listaProdutos.cadastrar(new Cosmetico(3, 109.90, 'Sabonete Laroche Posay', 2, true))
+    listaProdutos.cadastrar(new Cosmetico(4, 20.95, 'Creme Nivea', 2, false))
 
-    console.log("Entre com a opção desejada: ");
-    opcao = readlinesync.questionInt("");
 
-    if (opcao == 6) {
-      console.log(colors.fg.greenstrong,
-        "\n~ Efarmacy Health ~ - Cuidar de Perto em todos os momentos da vida ....");
-      sobre();
-      console.log(colors.reset, "");
-      process.exit(0);
+
+    while (true) {
+
+        console.log(colors.fg.magentastrong,)
+        console.log('*****************************************************');
+        console.log('                                                     ');
+        console.log('                    EFarmacy Health                  ');
+        console.log('                                                     ');
+        console.log('*****************************************************');
+        console.log('                                                     ');
+        console.log('               1 - Lista de Produtos                 ');
+        console.log('               2 - Listar Produtos pelo EAN          ');
+        console.log('               3 - Cadastrar Produtos                ');
+        console.log('               4 - Atualizar Produtos                ');
+        console.log('               5 - Deletar Produto                   ');
+        console.log('               6 - Sair                              ');
+        console.log('                                                     ');
+        console.log('*****************************************************');
+        console.log('                                                     ');
+        console.log("                                                     ",
+            colors.reset);
+
+        console.log("Entre com a opção desejada: ");
+        opcao = readlinesync.questionInt("");
+
+        if (opcao == 6) {
+            
+            console.log(colors.fg.greenstrong,
+                "\n~ Efarmacy Health ~ - Cuidar de Perto em todos os momentos da vida ....");
+            sobre();
+            console.log(colors.reset, "");
+            process.exit(0);
+        }
+
+        switch (opcao) {
+            case 1:
+                console.log(colors.fg.whitestrong,
+                    "\n\nListar Produtos da Farmacia \n\n", colors.reset);
+                listaProdutos.listarTodas();
+                keyPress()
+                break;
+            case 2:
+                console.log(colors.fg.whitestrong,
+                    "\n\nLista de Produtos pelo EAN pesquisado \n\n", colors.reset);
+                console.log('Digite o EAN para a pesquisa: ')
+                ean = readlinesync.questionInt();
+                listaProdutos.procurarPorEan(ean);
+                keyPress()
+                break;
+            case 3:
+                console.log(colors.fg.whitestrong,
+                    "\n\nCadastrar Produtos \n\n", colors.reset);
+
+                console.log('\nDigite o Tipo do produto: ');
+                console.log('\n1 para Remedio: ');
+                console.log('\n2 para Cosmetico: ');
+                tipo = readlinesync.keyInSelect(tipoProduto, "", { cancel: false }) + 1;
+
+
+                console.log('\nDigite o nome do produto: ')
+                nome = readlinesync.question('');
+
+                console.log('\nDigite o preco do produto: ')
+                preco = readlinesync.questionInt('')
+
+                console.log('Digite o EAN do produto: ')
+                ean = readlinesync.questionInt('')
+
+                switch (tipo) {
+                    case 1:
+                        console.log('É um medicamento Controlado? Y ou N');
+                        controlado = readlinesync.keyInYNStrict('')
+                        if (controlado == true) {
+                            listaProdutos.cadastrar(new Remedio(ean, preco, nome, tipo, controlado))
+                            console.log('Só pode ser vendido com receita')
+                        } else
+                            listaProdutos.cadastrar(new Remedio(ean, preco, nome, tipo, controlado))
+                        console.log('Medicamento cadastrado com Sucesso pelas normas da Anvisa')
+                        keyPress()
+                        break;
+
+                    case 2:
+                        console.log('O Produto faz parte do Clube Dermo+ ?');
+                        clubePontos = readlinesync.keyInYNStrict('')
+                        if (clubePontos == true) {
+                            console.log('Esse produto acumula pontos para o Derma Plus, ao final da pagina clique em *** Saiba mais ***')
+                        } else
+                            listaProdutos.cadastrar(new Cosmetico(ean, preco, nome, tipo, clubePontos))
+                        console.log('Cosmetico nao acumula pontos no nosso site! ')
+                }
+                console.log('Cosmetico cadastrado com Sucesso!..')
+                keyPress()
+                break;
+
+            case 4:
+                console.log(colors.fg.whitestrong,
+                    "\n\nAtualizar dados do produtos \n\n", colors.reset);
+
+                console.log('Digite o numero do EAN do Produto: ')
+                ean = readlinesync.questionInt('');
+
+                let produto = listaProdutos.buscarNoArray(ean);
+
+                if (produto) {
+                    console.log('\nDigite o Tipo do produto: ');
+                    console.log('\n1 para Remedio: ');
+                    console.log('\n2 para Cosmetico: ');
+                    tipo = readlinesync.keyInSelect(tipoProduto, "", { cancel: false }) + 1;
+
+
+                    console.log('\nDigite o nome do produto: ')
+                    nome = readlinesync.question('');
+
+                    console.log('\nDigite o preco do produto: ')
+                    preco = readlinesync.questionInt('')
+
+                    console.log('Digite o EAN do produto: ')
+                    ean = readlinesync.questionInt('')
+
+                    switch (tipo) {
+                        case 1:
+                            console.log('É um medicamento Controlado? Y ou N');
+                            controlado = readlinesync.keyInYNStrict('')
+                            if (controlado == true) {
+                                listaProdutos.cadastrar(new Remedio(ean, preco, nome, tipo, controlado))
+                                console.log('Só pode ser vendido com receita')
+                            } else
+                                listaProdutos.cadastrar(new Remedio(ean, preco, nome, tipo, controlado))
+                            console.log('Medicamento cadastrado com Sucesso pelas normas da Anvisa')
+                            keyPress()
+                            break;
+
+                        case 2:
+                            console.log('O Produto faz parte do Clube Dermo+ ?');
+                            clubePontos = readlinesync.keyInYNStrict('');
+                            if (clubePontos == true) {
+                                console.log('Esse produto acumula pontos para o Derma Plus, ao final da pagina clique em *** Saiba mais ***')
+                            } else
+                                listaProdutos.cadastrar(new Cosmetico(ean, preco, nome, tipo, clubePontos));
+                            console.log('Cosmetico nao acumula pontos no nosso site! ');
+                    }
+                    console.log('Cosmetico cadastrado com Sucesso!..');
+                    break;
+                } else
+                    console.log('\nProduto nao encontrado! ');
+            case 5:
+                console.log('Deletar produto da lista');
+                console.log('Digite o EAN do produto: ');
+                ean = readlinesync.questionInt('');
+                listaProdutos.deletar(ean);
+                console.log('Produto excluido com sucesso! ...')
+        }
     }
-
-    switch (opcao) {
-      case 1:
-        console.log(colors.fg.whitestrong,
-          "\n\nListar Produtos da Farmacia \n\n", colors.reset);
-        console.log(produto1, produto2)
-        keyPress()
-        break;
-    //   case 2:
-    //     console.log(colors.fg.whitestrong,
-    //       "\n\nListar Produtos pelo EAN \n\n", colors.reset);
-    //     produtos.listarProdutosEan();
-    //     keyPress()
-    //     break;
-    //   case 3:
-    //     console.log(colors.fg.whitestrong,
-    //       "\n\nCadastrar Produtos \n\n", colors.reset);
-
-    //     console.log("Digite o número da Conta: ")
-    //     numero = readlinesync.questionInt("");
-
-    //     contas.procurarPorNumero(numero);
-
-    //     keyPress()
-    //     break;
-    //   case 4:
-    //     console.log(colors.fg.whitestrong,
-    //       "\n\nAtualizar Produtos\n\n", colors.reset);
-
-    //     let Produto = produtos.buscarNoArray(ean);
-    //     keyPress()
-    //     break;
-    //   case 5:
-    //     console.log(colors.fg.whitestrong,
-    //       "\n\nDeletar Produto \n\n", colors.reset);
-
-    //     console.log("Digite o Ean do Produto a ser deletado: ")
-    //     ean = readlinesync.questionInt("");
-    //     produtos.deletar(produto);
-    //     keyPress()
-    //     break;
-    // }
-  }
-
 }
-
 function sobre(): void {
-  console.log("\n*****************************************************");
-  console.log("Projeto Desenvolvido por: JeansDev1 ");
-  console.log("Jean Andre - jeanv_lima@outlook.com");
-  console.log("github.com/jeansdev1");
-  console.log("*****************************************************");
+    console.log("\n*****************************************************");
+    console.log("Projeto Desenvolvido por: JeansDev1 ");
+    console.log("Jean Andre - jeanv_lima@outlook.com");
+    console.log("github.com/jeansdev1");
+    console.log("*****************************************************");
 }
 
 function keyPress(): void {
-  console.log(colors.reset, "");
-  console.log("\nPressione enter para continuar...");
-  readlinesync.prompt();
-}
+    console.log(colors.reset, "");
+    console.log("\nPressione enter para continuar...");
+    readlinesync.prompt();
 }
 main();

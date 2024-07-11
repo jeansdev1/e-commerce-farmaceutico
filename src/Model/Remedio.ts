@@ -19,7 +19,7 @@ export class Remedio extends Produto {
 
     public visualizar(): void {
         super.visualizar();
-        console.log('Necessario Receita Medica para Comprar' + this.controlado);
+        console.log('\nNecessario Receita Medica para Comprar:  ' + this.controlado);
 
     }
 

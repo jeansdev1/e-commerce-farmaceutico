@@ -1,8 +1,15 @@
 import readlinesync = require('readline-sync')
 import { colors } from './src/util/Colors';
+import { Produto } from './Model/Produto';
+import { Remedio } from './Model/Remedio';
 
 export function main() {
+
+    const produto1 = new Remedio(1, 50, 'Viagra', 1, false)
+    const produto2 = new Remedio(2, 25 , 'Sabonete', 2, false)
+
     let opcao: number;
+
 
   while (true) {
 
@@ -40,43 +47,43 @@ export function main() {
       case 1:
         console.log(colors.fg.whitestrong,
           "\n\nListar Produtos da Farmacia \n\n", colors.reset);
-        produtos.listarProdutos();
+        console.log(produto1, produto2)
         keyPress()
         break;
-      case 2:
-        console.log(colors.fg.whitestrong,
-          "\n\nListar Produtos pelo EAN \n\n", colors.reset);
-        produtos.listarProdutosEan();
-        keyPress()
-        break;
-      case 3:
-        console.log(colors.fg.whitestrong,
-          "\n\nCadastrar Produtos \n\n", colors.reset);
+    //   case 2:
+    //     console.log(colors.fg.whitestrong,
+    //       "\n\nListar Produtos pelo EAN \n\n", colors.reset);
+    //     produtos.listarProdutosEan();
+    //     keyPress()
+    //     break;
+    //   case 3:
+    //     console.log(colors.fg.whitestrong,
+    //       "\n\nCadastrar Produtos \n\n", colors.reset);
 
-        console.log("Digite o número da Conta: ")
-        numero = readlinesync.questionInt("");
+    //     console.log("Digite o número da Conta: ")
+    //     numero = readlinesync.questionInt("");
 
-        contas.procurarPorNumero(numero);
+    //     contas.procurarPorNumero(numero);
 
-        keyPress()
-        break;
-      case 4:
-        console.log(colors.fg.whitestrong,
-          "\n\nAtualizar Produtos\n\n", colors.reset);
+    //     keyPress()
+    //     break;
+    //   case 4:
+    //     console.log(colors.fg.whitestrong,
+    //       "\n\nAtualizar Produtos\n\n", colors.reset);
 
-        let Produto = produtos.buscarNoArray(ean);
-        keyPress()
-        break;
-      case 5:
-        console.log(colors.fg.whitestrong,
-          "\n\nDeletar Produto \n\n", colors.reset);
+    //     let Produto = produtos.buscarNoArray(ean);
+    //     keyPress()
+    //     break;
+    //   case 5:
+    //     console.log(colors.fg.whitestrong,
+    //       "\n\nDeletar Produto \n\n", colors.reset);
 
-        console.log("Digite o Ean do Produto a ser deletado: ")
-        ean = readlinesync.questionInt("");
-        produtos.deletar(produto);
-        keyPress()
-        break;
-    }
+    //     console.log("Digite o Ean do Produto a ser deletado: ")
+    //     ean = readlinesync.questionInt("");
+    //     produtos.deletar(produto);
+    //     keyPress()
+    //     break;
+    // }
   }
 
 }
@@ -94,5 +101,5 @@ function keyPress(): void {
   console.log("\nPressione enter para continuar...");
   readlinesync.prompt();
 }
-
+}
 main();
